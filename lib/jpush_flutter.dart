@@ -59,7 +59,7 @@ class JPush {
       return;
     }
     _channel.invokeMethod('setSmartPushEnable', {
-      'auth': enable
+      'enable': enable
     });
   }
 
