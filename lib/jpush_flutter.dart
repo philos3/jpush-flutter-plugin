@@ -47,7 +47,7 @@ class JPush {
   }) {
     print(flutter_log + "setAuth:");
     _channel.invokeMethod('setAuth', {
-      'auth': debug
+      'auth': auth
     });
   }
 
