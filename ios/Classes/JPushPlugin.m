@@ -4,6 +4,7 @@
 #endif
 
 #import <JPush/JPUSHService.h>
+#import "JGInforCollectionAuth.h"
 
 #define JPLog(fmt, ...) NSLog((@"| JPUSH | Flutter | iOS | " fmt), ##__VA_ARGS__)
 
