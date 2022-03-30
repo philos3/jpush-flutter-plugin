@@ -380,7 +380,10 @@ static NSMutableArray<FlutterResult>* getRidResults;
     result(@"");
 #elif TARGET_OS_IPHONE//真机
     
-    
+    [JPUSHService registrationIDCompletionHandler:^(int resCode, NSString *registrationID) {
+        NSLog(@"resCode : %d,registrationID: %@",resCode,registrationID);
+    }];
+
     if ([JPUSHService registrationID] != nil && ![[JPUSHService registrationID] isEqualToString:@""]) {
         // 如果已经成功获取 registrationID，从本地获取直接缓存
         result([JPUSHService registrationID]);
