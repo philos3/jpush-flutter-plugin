@@ -58,6 +58,7 @@ class _MyAppState extends State<MyApp> {
       channel: "theChannel",
       production: false,
       debug: true,
+      idfa: true
     );
     jpush.applyPushAuthority(
         new NotificationSettingsIOS(sound: true, alert: true, badge: true));

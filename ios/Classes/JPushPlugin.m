@@ -6,7 +6,8 @@
 #import <JPush/JPUSHService.h>
 #import "JGInforCollectionAuth.h"
 // 如果需要使用 idfa 功能所需要引入的头文件（可选）
-# import <AdSupport/AdSupport.h>
+#import <AdSupport/AdSupport.h>
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
 
 #define JPLog(fmt, ...) NSLog((@"| JPUSH | Flutter | iOS | " fmt), ##__VA_ARGS__)
 
