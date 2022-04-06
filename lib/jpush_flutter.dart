@@ -31,6 +31,7 @@ class JPush {
     bool production = false,
     String channel = '',
     bool debug = false,
+    bool idfa =false,
   }) {
     print(flutter_log + "setup:");
 
@@ -38,7 +39,8 @@ class JPush {
       'appKey': appKey,
       'channel': channel,
       'production': production,
-      'debug': debug
+      'debug': debug,
+      'idfa':idfa
     });
   }
 

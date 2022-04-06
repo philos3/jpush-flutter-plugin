@@ -5,6 +5,8 @@
 
 #import <JPush/JPUSHService.h>
 #import "JGInforCollectionAuth.h"
+// 如果需要使用 idfa 功能所需要引入的头文件（可选）
+# import <AdSupport/AdSupport.h>
 
 #define JPLog(fmt, ...) NSLog((@"| JPUSH | Flutter | iOS | " fmt), ##__VA_ARGS__)
 
@@ -172,16 +174,34 @@ static NSMutableArray<FlutterResult>* getRidResults;
     JPLog(@"setup:");
     NSDictionary *arguments = call.arguments;
     NSNumber *debug = arguments[@"debug"];
+    NSNumber *idfa = arguments[@"idfa"];
     if ([debug boolValue]) {
         [JPUSHService setDebugMode];
     } else {
         [JPUSHService setLogOFF];
     }
+
+ NSString *advertisingId;
+    if([idfa boolValue]){
+    // 获取 IDFA
+    // 如需使用 IDFA 功能请添加此代码并在初始化方法的 advertisingIdentifier 参数中填写对应值
+      if (@available(iOS 14, *)) {
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                if (status == ATTrackingManagerAuthorizationStatusAuthorized) {
+                    advertisingId = [[ASIdentifierManager sharedManager] advertisingIdentifier].UUIDString;
+                }
+            }];
+        } else {
+            // 使用原方式访问 IDFA
+            advertisingId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+        }
+    }
     
     [JPUSHService setupWithOption:_completeLaunchNotification
                            appKey:arguments[@"appKey"]
                           channel:arguments[@"channel"]
-                 apsForProduction:[arguments[@"production"] boolValue]];
+                 apsForProduction:[arguments[@"production"] boolValue]
+                 advertisingIdentifier:advertisingId];
 }
 
 ///是否同意隐私协议
@@ -217,9 +237,7 @@ static NSMutableArray<FlutterResult>* getRidResults;
     ///JPAuthorizationOptionProvidesAppNotificationSettings 【注册通知】通知回调代理（可选）
      // NSLocationWhenInUseUsageDescription  //访问位置信息（可选）
     // NSLocationAlwaysAndWhenInUseUsageDescription  //访问位置信息（可选）
-    if ([arguments[@"idfa"] boolValue]) {
-        notificationTypes |= NSUserTrackingUsageDescription;  //idfa包使用（可选）
-    }
+
 
     JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
     entity.types = notificationTypes;
