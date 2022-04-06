@@ -328,15 +328,17 @@ class NotificationSettingsIOS {
   final bool sound;
   final bool alert;
   final bool badge;
+  final bool idfa;
 
   const NotificationSettingsIOS({
     this.sound = true,
     this.alert = true,
     this.badge = true,
+    this.idfa = true,
   });
 
   Map<String, dynamic> toMap() {
-    return <String, bool>{'sound': sound, 'alert': alert, 'badge': badge};
+    return <String, bool>{'sound': sound, 'alert': alert, 'badge': badge, 'idfa':idfa};
   }
 }
 

@@ -167,7 +167,7 @@ static NSMutableArray<FlutterResult>* getRidResults;
 
 
 
-
+ //【初始化sdk】
 - (void)setup:(FlutterMethodCall*)call result:(FlutterResult)result {
     JPLog(@"setup:");
     NSDictionary *arguments = call.arguments;
@@ -184,6 +184,7 @@ static NSMutableArray<FlutterResult>* getRidResults;
                  apsForProduction:[arguments[@"production"] boolValue]];
 }
 
+///是否同意隐私协议
 - (void)setAuth:(FlutterMethodCall*)call result:(FlutterResult)result {
     JPLog(@"setAuth:");
     NSDictionary *arguments = call.arguments;
@@ -213,6 +214,13 @@ static NSMutableArray<FlutterResult>* getRidResults;
     if ([arguments[@"badge"] boolValue]) {
         notificationTypes |= JPAuthorizationOptionBadge;
     }
+    ///JPAuthorizationOptionProvidesAppNotificationSettings 【注册通知】通知回调代理（可选）
+     // NSLocationWhenInUseUsageDescription  //访问位置信息（可选）
+    // NSLocationAlwaysAndWhenInUseUsageDescription  //访问位置信息（可选）
+    if ([arguments[@"idfa"] boolValue]) {
+        notificationTypes |= NSUserTrackingUsageDescription;  //idfa包使用（可选）
+    }
+
     JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
     entity.types = notificationTypes;
     [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
@@ -566,6 +574,7 @@ static NSMutableArray<FlutterResult>* getRidResults;
     //  application.applicationIconBadgeNumber = 0;
 }
 
+  //sdk注册DeviceToken
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [JPUSHService registerDeviceToken:deviceToken];
 }
