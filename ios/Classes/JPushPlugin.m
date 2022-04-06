@@ -183,27 +183,56 @@ static NSMutableArray<FlutterResult>* getRidResults;
         [JPUSHService setLogOFF];
     }
 
- NSString *advertisingId;
     if([idfa boolValue]){
+    JPLog(@"IDFA:");
     // 获取 IDFA
     // 如需使用 IDFA 功能请添加此代码并在初始化方法的 advertisingIdentifier 参数中填写对应值
       if (@available(iOS 14, *)) {
+            // iOS14及以上版本需要先请求权限
             [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
                 if (status == ATTrackingManagerAuthorizationStatusAuthorized) {
-                    advertisingId = [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString];
+                    // 获取到权限后，依然使用老方法获取idfa
+                    NSString *advertisingId = [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString];
+                    JPLog(@"idfa:%@",advertisingId);
+                    [JPUSHService setupWithOption:_completeLaunchNotification
+                                               appKey:arguments[@"appKey"]
+                                              channel:arguments[@"channel"]
+                                     apsForProduction:[arguments[@"production"] boolValue]
+                                     advertisingIdentifier:advertisingId];
+
+                } else {
+                    JPLog(@"请在设置-隐私-跟踪中允许App请求跟踪");
+                   [JPUSHService setupWithOption:_completeLaunchNotification
+                                           appKey:arguments[@"appKey"]
+                                          channel:arguments[@"channel"]
+                                 apsForProduction:[arguments[@"production"] boolValue]];
                 }
             }];
         } else {
-            // 使用原方式访问 IDFA
-            advertisingId = [[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString]];
+        // iOS14以下版本依然使用老方法
+        // 判断在设置-隐私里用户是否打开了广告跟踪
+          if ([[ASIdentifierManager sharedManager] isAdvertisingTrackingEnabled]) {
+                 NSString *advertisingId = [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString];
+                 JPLog(@"idfa:%@",advertisingId);
+                 [JPUSHService setupWithOption:_completeLaunchNotification
+                                             appKey:arguments[@"appKey"]
+                                            channel:arguments[@"channel"]
+                                   apsForProduction:[arguments[@"production"] boolValue]
+                                   advertisingIdentifier:advertisingId];
+          } else {
+              JPLog(@"请在设置-隐私-跟踪中允许App请求跟踪");
+              [JPUSHService setupWithOption:_completeLaunchNotification
+                                               appKey:arguments[@"appKey"]
+                                              channel:arguments[@"channel"]
+                                     apsForProduction:[arguments[@"production"] boolValue]];
+          }
         }
+    } else {
+      [JPUSHService setupWithOption:_completeLaunchNotification
+                                 appKey:arguments[@"appKey"]
+                                channel:arguments[@"channel"]
+                       apsForProduction:[arguments[@"production"] boolValue]];
     }
-    
-    [JPUSHService setupWithOption:_completeLaunchNotification
-                           appKey:arguments[@"appKey"]
-                          channel:arguments[@"channel"]
-                 apsForProduction:[arguments[@"production"] boolValue]
-                 advertisingIdentifier:advertisingId];
 }
 
 ///是否同意隐私协议
