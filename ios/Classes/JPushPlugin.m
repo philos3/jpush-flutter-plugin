@@ -190,12 +190,12 @@ static NSMutableArray<FlutterResult>* getRidResults;
       if (@available(iOS 14, *)) {
             [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
                 if (status == ATTrackingManagerAuthorizationStatusAuthorized) {
-                    advertisingId = [[ASIdentifierManager sharedManager] advertisingIdentifier].UUIDString;
+                    advertisingId = [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString];
                 }
             }];
         } else {
             // 使用原方式访问 IDFA
-            advertisingId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+            advertisingId = [[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString]];
         }
     }
     
